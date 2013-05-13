@@ -1,0 +1,1 @@
+require("scene.action")ChangeImage = class("ChangeImage", Action)function ChangeImage:initialize(image)	Action.initialize(self)	self.image = imageendfunction ChangeImage:act(dt)	if not self.finish then		self.actor:setImage(self.image)		self.finish = true	endend

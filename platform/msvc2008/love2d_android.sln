@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_love_android", "projectes\libloveandroid.vcproj", "{FA003EBD-C0C0-452A-9ED0-106658565CC5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "love_android", "projectes\love_android.vcproj", "{4F794F99-5AA6-46C0-A3D3-C3D09CBACE4B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC} = {2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}
+		{FA003EBD-C0C0-452A-9ED0-106658565CC5} = {FA003EBD-C0C0-452A-9ED0-106658565CC5}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_box2d", "projectes\libbox2d.vcproj", "{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA003EBD-C0C0-452A-9ED0-106658565CC5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FA003EBD-C0C0-452A-9ED0-106658565CC5}.Debug|Win32.Build.0 = Debug|Win32
+		{FA003EBD-C0C0-452A-9ED0-106658565CC5}.Release|Win32.ActiveCfg = Release|Win32
+		{FA003EBD-C0C0-452A-9ED0-106658565CC5}.Release|Win32.Build.0 = Release|Win32
+		{4F794F99-5AA6-46C0-A3D3-C3D09CBACE4B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4F794F99-5AA6-46C0-A3D3-C3D09CBACE4B}.Debug|Win32.Build.0 = Debug|Win32
+		{4F794F99-5AA6-46C0-A3D3-C3D09CBACE4B}.Release|Win32.ActiveCfg = Release|Win32
+		{4F794F99-5AA6-46C0-A3D3-C3D09CBACE4B}.Release|Win32.Build.0 = Release|Win32
+		{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}.Debug|Win32.Build.0 = Debug|Win32
+		{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}.Release|Win32.ActiveCfg = Release|Win32
+		{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
