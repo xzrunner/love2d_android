@@ -165,6 +165,7 @@ function love.createhandlers()
 			if love.keyboard then love.keyboard.setKeyState(b, false) end
 		end,
 		mousemoved = function (x,y)
+			if love.mousemoved then love.mousemoved(x,y) end
 			if love.mouse then
 				love.mouse.setPosition(x, y)
 			end

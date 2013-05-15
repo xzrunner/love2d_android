@@ -1,0 +1,11 @@
+platform/msvc2008/libbox2d/
+platform/msvc2008/libloveandroid/
+platform/msvc2008/love_android/
+platform/msvc2008/projectes/demo_back/
+platform/msvc2008/projectes/demo/
+!platform/msvc2008/projectes/demo/libraries/
+!platform/msvc2008/projectes/demo/scene/
+src/android/java/bin/
+src/android/java/gen/
+src/android/java/libs/
+src/android/java/obj/
