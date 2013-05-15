@@ -285,14 +285,17 @@ namespace opengl
 
 		bool ret = loadVolatile();
 
- 		// todo: flip y
-		float tmp = vertices[0].t;
-		vertices[0].t = vertices[1].t;
-		vertices[1].t = tmp;
-
-		tmp = vertices[2].t;
-		vertices[2].t = vertices[3].t;
-		vertices[3].t = tmp;
+		// todo: flip y
+		if (data->getType() == love::image::null::ImageData::e_png)
+		{
+	 		float tmp = vertices[0].t;
+	 		vertices[0].t = vertices[1].t;
+	 		vertices[1].t = tmp;
+	 
+	 		tmp = vertices[2].t;
+	 		vertices[2].t = vertices[3].t;
+	 		vertices[3].t = tmp;
+		}
 
 		return ret;
 	}

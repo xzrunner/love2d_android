@@ -24,7 +24,7 @@ function Scene0:initialize()
 	self.actors["actor1"] = Actor(graphics["ui_04.png"], 638.0, 322.0, 0.00, 1.0, 1.0, 39.0, 23.0)
 	self.actors["actor2"] = Actor(graphics["ui_14.png"], 187.0, 343.0, 0.00, 1.0, 1.0, 74.0, 97.0)
 	
-	self.buttons["actor0"] = Button(graphics["ui_03.png"], 192.0, 168.0, 0.00, 1.0, 1.0, 39.0, 23.0)
+	self.buttons["actor0"] = Button(graphics["ui_03.png"], 192, 168, 0.00, 1.0, 1.0, 39.0, 23.0)
 	
 	self.buttons.actor0:addPressAction(ScaleSize(1.5))
 	self.buttons.actor0:addReleaseAction(ScaleSize(1.0))

@@ -161,19 +161,65 @@ extern float g_scale;
 extern float g_xOffset;
 extern float g_yOffset;
 
+// void resize_common(int width, int height)
+// {
+// 	g_width = width;
+// 	g_height = height;
+// 
+// 	const int WIDTH = 800,
+// 		HEIGHT = 600;
+// 
+// 	const float sw = (float)width / WIDTH,
+// 		sh = (float)height / HEIGHT;
+// 	g_scale = sw < sh ? sw : sh;
+// 
+// 	glViewport(0, 0, width, height);
+// 
+// 	// Reset the projection matrix
+// 	glMatrixMode(GL_PROJECTION);
+// 	glLoadIdentity();
+// 
+// 	// Set up orthographic view (no depth)
+// 	glOrthof(0.0, width, height, 0.0, -1.0, 1.0);
+// 
+// 	glScalef(sw, sh, 0.0f);
+// 
+// 	// Reset modelview matrix
+// 	glMatrixMode(GL_MODELVIEW);
+// 	glLoadIdentity();
+// }
+
 void resize_common(int width, int height)
 {
 	g_width = width;
 	g_height = height;
 
 	const int WIDTH = 800,
-		HEIGHT = 600;
+		HEIGHT = 480;
 
 	const float sw = (float)width / WIDTH,
 		sh = (float)height / HEIGHT;
 	g_scale = sw < sh ? sw : sh;
 
-	glViewport(0, 0, width, height);
+	// Set the viewport to top-left corner
+	if (g_scale == sw)
+	{
+		const float offset = (height - g_scale * HEIGHT) * 0.5f;
+		height -= offset * 2;
+		glViewport(0, offset, width, height);
+
+		g_xOffset = 0;
+		g_yOffset = offset;
+	}
+	else
+	{
+		const float offset = (width - g_scale * WIDTH) * 0.5f;
+		width -= offset * 2;
+		glViewport(offset, 0, width, height);
+
+		g_xOffset = offset;
+		g_yOffset = 0;
+	}
 
 	// Reset the projection matrix
 	glMatrixMode(GL_PROJECTION);
@@ -182,58 +228,12 @@ void resize_common(int width, int height)
 	// Set up orthographic view (no depth)
 	glOrthof(0.0, width, height, 0.0, -1.0, 1.0);
 
-	glScalef(sw, sh, 0.0f);
+	glScalef(g_scale, g_scale, 0.0f);
 
 	// Reset modelview matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
-
-//void resize_common(int width, int height)
-//{
-//	g_width = width;
-//	g_height = height;
-//
-//	const int WIDTH = 800,
-//		HEIGHT = 600;
-//
-//	const float sw = (float)width / WIDTH,
-//		sh = (float)height / HEIGHT;
-//	g_scale = sw < sh ? sw : sh;
-//
-//	// Set the viewport to top-left corner
-//	if (g_scale == sw)
-//	{
-//		const float offset = (height - g_scale * HEIGHT) * 0.5f;
-//		height -= offset * 2;
-//		glViewport(0, offset, width, height);
-//
-//		g_xOffset = 0;
-//		g_yOffset = offset;
-//	}
-//	else
-//	{
-//		const float offset = (width - g_scale * WIDTH) * 0.5f;
-//		width -= offset * 2;
-//		glViewport(offset, 0, width, height);
-//
-//		g_xOffset = offset;
-//		g_yOffset = 0;
-//	}
-//
-//	// Reset the projection matrix
-//	glMatrixMode(GL_PROJECTION);
-//	glLoadIdentity();
-//
-//	// Set up orthographic view (no depth)
-//	glOrthof(0.0, width, height, 0.0, -1.0, 1.0);
-//
-//	glScalef(g_scale, g_scale, 0.0f);
-//
-//	// Reset modelview matrix
-//	glMatrixMode(GL_MODELVIEW);
-//	glLoadIdentity();
-//}
 
 #ifdef LOVE_WINDOWS
 

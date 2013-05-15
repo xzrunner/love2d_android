@@ -37,7 +37,7 @@ namespace null
 	int w_newFile(lua_State * L);
 	int w_newFileData(lua_State * L);
 	int w_exists(lua_State * L);
-	int w_log();
+	int w_log(lua_State * L);
 #ifdef LOVE_ANDROID_JNI
 	int w_setResourcePath(lua_State* L);
 	int w_getFileData(lua_State* L);

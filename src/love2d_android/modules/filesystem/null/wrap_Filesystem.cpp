@@ -107,8 +107,43 @@ namespace null
 
 	int w_log(lua_State * L)
 	{
-		const char * arg = luaL_checkstring(L, 1);
-		log(arg);
+		const char* msg = luaL_checkstring(L, 1);
+		if (lua_isnumber(L, 2))
+		{
+			int size = luaL_checkint(L, 2);
+			switch (size)
+			{
+			case 1:
+				{
+					int p0 = luaL_checkint(L, 3);
+					log(msg, p0);
+				}
+				break;
+			case 2:
+				{
+					int p0 = luaL_checkint(L, 3);
+					int p1 = luaL_checkint(L, 4);
+					log(msg, p0, p1);
+				}
+				break;
+			case 3:
+				{
+					int p0 = luaL_checkint(L, 3);
+					int p1 = luaL_checkint(L, 4);
+					int p2 = luaL_checkint(L, 5);
+					log(msg, p0, p1, p2);
+				}
+				break;
+			default:
+				log(msg);
+			}
+
+		}
+		else
+		{
+			log(msg);
+		}
+
 		return 0;
 	}
 

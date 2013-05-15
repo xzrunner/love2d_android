@@ -6,8 +6,8 @@ function love.load()
 	require("scene.actor")
 	require("scene.button")
 	
-	require("Scene0")
-	require("Scene1")
+	require("scene0")
+	require("scene1")
 	
 	graphics = {}
 	
