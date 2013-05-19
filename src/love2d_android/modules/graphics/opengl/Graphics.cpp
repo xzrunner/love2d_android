@@ -44,7 +44,7 @@ namespace opengl
 		: currentFont(0)
 		, lineStyle(LINE_SMOOTH)
 		, lineWidth(1)
-		, matrixLimit(0)
+		, matrixLimit(16)
 		, userMatrices(0)
 	{
 		resetBoundTexture();
