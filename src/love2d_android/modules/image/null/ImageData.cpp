@@ -68,8 +68,6 @@ namespace null
 
 	ImageData::~ImageData()
 	{
-		if (m_initFile) delete m_initFile;
-
 		delete[] data;
 	}
 
