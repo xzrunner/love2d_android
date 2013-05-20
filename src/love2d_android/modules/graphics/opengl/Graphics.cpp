@@ -44,9 +44,12 @@ namespace opengl
 		: currentFont(0)
 		, lineStyle(LINE_SMOOTH)
 		, lineWidth(1)
-		, matrixLimit(16)
+		, matrixLimit(0)
 		, userMatrices(0)
 	{
+#ifdef LOVE_WINDOWS
+		matrixLimit = 16;
+#endif
 		resetBoundTexture();
 	}
 
@@ -107,69 +110,78 @@ namespace opengl
 
 	bool Graphics::setMode(int width, int height, bool fullscreen, bool vsync, int fsaa)
 	{
-		//// This operation destroys the OpenGL context, so
-		//// we must save the state.
-		//DisplayState tempState;
-		//if (isCreated())
-		//	tempState = saveState();
+		////// This operation destroys the OpenGL context, so
+		////// we must save the state.
+		////DisplayState tempState;
+		////if (isCreated())
+		////	tempState = saveState();
 
-		// Unlad all volatile objects. These must be reloaded after
-		// the display mode change.
-		Volatile::unloadAll();
+		//// Unlad all volatile objects. These must be reloaded after
+		//// the display mode change.
+		//Volatile::unloadAll();
 
-		bool success = true;
-		//bool success = currentWindow->setWindow(width, height, fullscreen, vsync, fsaa);
-		//// Regardless of failure, we'll have to set up OpenGL once again.
+		//bool success = true;
+		////bool success = currentWindow->setWindow(width, height, fullscreen, vsync, fsaa);
+		////// Regardless of failure, we'll have to set up OpenGL once again.
 
-		//width = currentWindow->getWidth();
-		//height = currentWindow->getHeight();
+		////width = currentWindow->getWidth();
+		////height = currentWindow->getHeight();
 
-		// Okay, setup OpenGL.
+		//// Okay, setup OpenGL.
 
-		// Enable blending
-		glEnable(GL_BLEND);
+		//// Enable blending
+		//glEnable(GL_BLEND);
 
-		// "Normal" blending
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//// "Normal" blending
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		// Enable line/point smoothing.
-		setLineStyle(LINE_SMOOTH);
-		glEnable(GL_POINT_SMOOTH);
-		glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+		//// Enable line/point smoothing.
+		//setLineStyle(LINE_SMOOTH);
+		//glEnable(GL_POINT_SMOOTH);
+		//glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 
-		// Enable textures
-		glEnable(GL_TEXTURE_2D);
+		//// Enable textures
+		//glEnable(GL_TEXTURE_2D);
 
-		// Set the viewport to top-left corner
-		glViewport(0, 0, width, height);
+		//// Set the viewport to top-left corner
+		//glViewport(0, 0, width, height);
 
-		// Reset the projection matrix
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
+		//// Reset the projection matrix
+		//glMatrixMode(GL_PROJECTION);
+		//glLoadIdentity();
 
-		// Set up orthographic view (no depth)
-		glOrthof(0.0, width, height, 0.0, -1.0, 1.0);
+		//// Set up orthographic view (no depth)
+		//glOrthof(0.0, width, height, 0.0, -1.0, 1.0);
 
-		// Reset modelview matrix
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
+		//// Reset modelview matrix
+		//glMatrixMode(GL_MODELVIEW);
+		//glLoadIdentity();
 
-		// Set pixel row alignment
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+		//// Set pixel row alignment
+		//glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
 
-		// Reload all volatile objects.
-		if (!Volatile::loadAll())
-			std::cerr << "Could not reload all volatile objects." << std::endl;
+		//// Reload all volatile objects.
+		//if (!Volatile::loadAll())
+		//	std::cerr << "Could not reload all volatile objects." << std::endl;
 
-		//// Restore the display state.
-		//restoreState(tempState);
+		////// Restore the display state.
+		////restoreState(tempState);
 
+		//// Get the maximum number of matrices
+		//// subtract a few to give the engine some room.
+		//glGetIntegerv(GL_MAX_MODELVIEW_STACK_DEPTH, &matrixLimit);
+		//matrixLimit -= 5;
+
+		//return success;
+
+		//////////////////////////////////////////////////////////////////////////
+		
 		// Get the maximum number of matrices
 		// subtract a few to give the engine some room.
 		glGetIntegerv(GL_MAX_MODELVIEW_STACK_DEPTH, &matrixLimit);
 		matrixLimit -= 5;
 
-		return success;
+		return true;
 	}
 
 	void Graphics::getMode(int &width, int &height, bool &fullscreen, bool &vsync, int &fsaa)
