@@ -359,6 +359,7 @@ function love.init()
 		--love.graphics.setCaption(c.title)
 	end
 --]]	
+	love.graphics.setMode(800, 480, true, false, 0)
 
 	-- Our first timestep, because screen creation can take some time
 	if love.timer then
