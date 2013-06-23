@@ -39,6 +39,7 @@ namespace opengl
 	int w_getWidth(lua_State * L);
 	int w_getHeight(lua_State * L);
 	int w_newImage(lua_State * L);
+	int w_newQuad(lua_State * L);
 	int w_newFont1(lua_State * L);
 	int w_newImageFont(lua_State * L);
 	int w_newSpriteBatch(lua_State * L);
@@ -67,6 +68,7 @@ namespace opengl
 	int w_getPointStyle(lua_State * L);
 	int w_getMaxPointSize(lua_State * L);
 	int w_draw(lua_State * L);
+	int w_drawq(lua_State * L);
 	int w_print1(lua_State * L);
 	int w_printf1(lua_State * L);
 	int w_point(lua_State * L);

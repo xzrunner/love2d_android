@@ -132,6 +132,26 @@ namespace opengl
 		return 1;
 	}
 
+	int w_newQuad(lua_State * L)
+	{
+		float x = (float) luaL_checknumber(L, 1);
+		float y = (float) luaL_checknumber(L, 2);
+		float w = (float) luaL_checknumber(L, 3);
+		float h = (float) luaL_checknumber(L, 4);
+		float sw = (float) luaL_checknumber(L, 5);
+		float sh = (float) luaL_checknumber(L, 6);
+
+		Quad * frame = instance->newQuad(x, y, w, h, sw, sh);
+
+		if (frame == 0)
+			return luaL_error(L, "Could not create frame.");
+
+		frame->flip(false, true);
+
+		luax_newtype(L, "Quad", GRAPHICS_QUAD_T, (void*)frame);
+		return 1;
+	}
+
 	int w_newFont1(lua_State * L)
 	{
 		Data * font_data = NULL;
@@ -590,6 +610,38 @@ namespace opengl
 		return 0;
 	}
 
+		/**
+	* Draws an Quad of a DrawQable at the specified coordinates,
+	* with rotation and scaling along both axes.
+	*
+	* @param q The Quad to draw.
+	* @param x The x-coordinate.
+	* @param y The y-coordinate.
+	* @param angle The amount of rotation.
+	* @param sx The scale factor along the x-axis. (1 = normal).
+	* @param sy The scale factor along the y-axis. (1 = normal).
+	* @param ox The offset along the x-axis.
+	* @param oy The offset along the y-axis.
+	* @param kx Shear along the x-axis.
+	* @param ky Shear along the y-axis.
+	**/
+	int w_drawq(lua_State * L)
+	{
+		DrawQable * dq = luax_checktype<DrawQable>(L, 1, "DrawQable", GRAPHICS_DRAWQABLE_T);
+		Quad * q = luax_checkframe(L, 2);
+		float x = (float)luaL_checknumber(L, 3);
+		float y = (float)luaL_checknumber(L, 4);
+		float angle = (float)luaL_optnumber(L, 5, 0);
+		float sx = (float)luaL_optnumber(L, 6, 1);
+		float sy = (float)luaL_optnumber(L, 7, sx);
+		float ox = (float)luaL_optnumber(L, 8, 0);
+		float oy = (float)luaL_optnumber(L, 9, 0);
+		float kx = (float)luaL_optnumber(L, 10, 0);
+		float ky = (float)luaL_optnumber(L, 11, 0);
+		dq->drawq(q, x, y, angle, sx, sy, ox, oy, kx, ky);
+		return 0;
+	}
+
 	int w_print1(lua_State * L)
 	{
 		const char * str = luaL_checkstring(L, 1);
@@ -893,6 +945,7 @@ namespace opengl
 		{ "present", w_present },
 
 		{ "newImage", w_newImage },
+		{ "newQuad", w_newQuad },
 		{ "newFont1", w_newFont1 },
 		{ "newImageFont", w_newImageFont },
 		{ "newSpriteBatch", w_newSpriteBatch },
@@ -925,6 +978,7 @@ namespace opengl
 		{ "getMaxPointSize", w_getMaxPointSize },
 
 		{ "draw", w_draw },
+		{ "drawq", w_drawq },
 
 		{ "print1", w_print1 },
 		{ "printf1", w_printf1 },
@@ -956,7 +1010,7 @@ namespace opengl
 	static const lua_CFunction types[] = {
 		luaopen_font,
 		luaopen_image,
-		luaopen_quad,
+		luaopen_frame,
 		luaopen_spritebatch,
 		luaopen_particlesystem,
 		0

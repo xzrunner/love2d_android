@@ -11,6 +11,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "love_android", "projectes\l
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_box2d", "projectes\libbox2d.vcproj", "{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "love_android2", "projectes\love_android2.vcproj", "{18B410D0-7390-4740-B91A-2FC5C9FE3DEF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC} = {2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}
+		{4CA6A551-EE4D-459E-9E88-C468B64D9C4D} = {4CA6A551-EE4D-459E-9E88-C468B64D9C4D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_love_android2", "projectes\libloveandroid2.vcproj", "{4CA6A551-EE4D-459E-9E88-C468B64D9C4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -29,6 +37,14 @@ Global
 		{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}.Debug|Win32.Build.0 = Debug|Win32
 		{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}.Release|Win32.ActiveCfg = Release|Win32
 		{2EB3BF05-19F4-4E27-BCEC-19C466EF7DBC}.Release|Win32.Build.0 = Release|Win32
+		{18B410D0-7390-4740-B91A-2FC5C9FE3DEF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{18B410D0-7390-4740-B91A-2FC5C9FE3DEF}.Debug|Win32.Build.0 = Debug|Win32
+		{18B410D0-7390-4740-B91A-2FC5C9FE3DEF}.Release|Win32.ActiveCfg = Release|Win32
+		{18B410D0-7390-4740-B91A-2FC5C9FE3DEF}.Release|Win32.Build.0 = Release|Win32
+		{4CA6A551-EE4D-459E-9E88-C468B64D9C4D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4CA6A551-EE4D-459E-9E88-C468B64D9C4D}.Debug|Win32.Build.0 = Debug|Win32
+		{4CA6A551-EE4D-459E-9E88-C468B64D9C4D}.Release|Win32.ActiveCfg = Release|Win32
+		{4CA6A551-EE4D-459E-9E88-C468B64D9C4D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

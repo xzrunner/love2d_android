@@ -26,7 +26,6 @@
 *	1. love::window::Window *currentWindow;
 *	3. drawTest()'s Font
 *	7. newCanvas()
-*	8. newPixelEffect()
 *	9. Canvas getRenderHeight()
 *	10. setBlendMode() getBlendMode()
 *	11. toggleFullscreen()
