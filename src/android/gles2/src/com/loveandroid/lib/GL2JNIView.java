@@ -35,7 +35,6 @@ package com.loveandroid.lib;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -68,6 +67,8 @@ class GL2JNIView extends GLSurfaceView {
     private static String TAG = "GL2JNIView";
     private static final boolean DEBUG = false;
 
+    private Renderer mRenderer;
+    
     public GL2JNIView(Context context) {
         super(context);
         init(false, 0, 0);
@@ -104,9 +105,143 @@ class GL2JNIView extends GLSurfaceView {
                              new ConfigChooser(5, 6, 5, 0, depth, stencil) );
 
         /* Set the renderer responsible for frame rendering */
-        setRenderer(new Renderer());
+        mRenderer = new Renderer();
+        setRenderer(mRenderer);
     }
 
+    public void onPause(){
+    	queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                mRenderer.handleOnPause();
+            }
+        });
+    	
+    	super.onPause();
+    }
+    
+    public void onResume(){
+    	super.onResume();
+    	
+    	queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                mRenderer.handleOnResume();
+            }
+        });
+    }
+    
+    public boolean onTouchEvent(final MotionEvent event) {
+    	// these data are used in ACTION_MOVE and ACTION_CANCEL
+    	final int pointerNumber = event.getPointerCount();
+    	final int[] ids = new int[pointerNumber];
+    	final float[] xs = new float[pointerNumber];
+    	final float[] ys = new float[pointerNumber];
+
+    	for (int i = 0; i < pointerNumber; i++) {
+            ids[i] = event.getPointerId(i);
+            xs[i] = event.getX(i);
+            ys[i] = event.getY(i);
+        }
+        
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+        case MotionEvent.ACTION_POINTER_DOWN:
+        	final int indexPointerDown = event.getAction() >> MotionEvent.ACTION_POINTER_ID_SHIFT;
+        	final int idPointerDown = event.getPointerId(indexPointerDown);
+            final float xPointerDown = event.getX(indexPointerDown);
+            final float yPointerDown = event.getY(indexPointerDown);
+
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    mRenderer.handleActionDown(idPointerDown, xPointerDown, yPointerDown);
+                }
+            });
+            break;
+            
+        case MotionEvent.ACTION_DOWN:
+        	// there are only one finger on the screen
+        	final int idDown = event.getPointerId(0);
+            final float xDown = xs[0];
+            final float yDown = ys[0];
+            
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    mRenderer.handleActionDown(idDown, xDown, yDown);
+                }
+            });
+            break;
+
+        case MotionEvent.ACTION_MOVE:
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    mRenderer.handleActionMove(ids, xs, ys);
+                }
+            });
+            break;
+
+        case MotionEvent.ACTION_POINTER_UP:
+        	final int indexPointUp = event.getAction() >> MotionEvent.ACTION_POINTER_ID_SHIFT;
+        	final int idPointerUp = event.getPointerId(indexPointUp);
+            final float xPointerUp = event.getX(indexPointUp);
+            final float yPointerUp = event.getY(indexPointUp);
+            
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    mRenderer.handleActionUp(idPointerUp, xPointerUp, yPointerUp);
+                }
+            });
+            break;
+            
+        case MotionEvent.ACTION_UP:  
+        	// there are only one finger on the screen
+        	final int idUp = event.getPointerId(0);
+            final float xUp = xs[0];
+            final float yUp = ys[0];
+            
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    mRenderer.handleActionUp(idUp, xUp, yUp);
+                }
+            });
+            break;
+
+        case MotionEvent.ACTION_CANCEL:
+            queueEvent(new Runnable() {
+               @Override
+                public void run() {
+                    mRenderer.handleActionCancel(ids, xs, ys);
+                }
+            });
+            break;
+        }
+      
+        return true;
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//    	final int kc = keyCode;
+//    	if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {
+//    		queueEvent(new Runnable() {
+//	            @Override
+//	            public void run() {
+//	                mRenderer.handleKeyDown(kc);
+//	            }
+//    		});
+//    		return true;
+//    	}
+        return super.onKeyDown(keyCode, event);
+    }
+    
+    protected void onSizeChanged(int w, int h, int oldw, int oldh){
+//    	this.mRenderer.setScreenWidthAndHeight(w, h);
+    }    
+    
     private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
         private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
         public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
@@ -324,8 +459,25 @@ class GL2JNIView extends GLSurfaceView {
     }
 
     private static class Renderer implements GLSurfaceView.Renderer {
+    	private final static long NANOSECONDSPERSECOND = 1000000000L;
+    	private final static long NANOSECONDSPERMINISECOND = 1000000;
+    	private static long animationInterval = (long)(1.0 / 60 * NANOSECONDSPERSECOND);
+    	private long last;
+    	
         public void onDrawFrame(GL10 gl) {
+    		long now = System.nanoTime();
+    		long interval = now - last;
+    		
     		JNIProxy.nativeRender();
+    		
+    		if (interval < animationInterval) {
+    			try {
+    				// *2 ??
+    				Thread.sleep((animationInterval - interval) * 2 / NANOSECONDSPERMINISECOND);
+    			} catch (Exception e){}
+    		}
+    		
+    		last = now;
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -333,8 +485,36 @@ class GL2JNIView extends GLSurfaceView {
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            // Do nothing.
-        	JNIProxy.nativeInit("");
+    		JNIProxy.nativeInit("");
+    		last = System.nanoTime();
         }
+        
+        public void handleActionDown(int id, float x, float y) {
+        	JNIProxy.nativeTouchesBegin(id, x, y);
+        }
+        
+        public void handleActionUp(int id, float x, float y) {
+        	JNIProxy.nativeTouchesEnd(id, x, y);
+        }
+        
+        public void handleActionCancel(int[] id, float[] x, float[] y) {
+        	JNIProxy.nativeTouchesCancel(id, x, y);
+        }
+        
+        public void handleActionMove(int[] id, float[] x, float[] y) {
+        	JNIProxy.nativeTouchesMove(id, x, y);
+        }
+        
+        public boolean handleKeyDown(int keyCode) {
+        	return JNIProxy.nativeKeyDown(keyCode);
+        }
+        
+        public void handleOnPause() {
+        	JNIProxy.nativeOnPause();
+        }
+        
+        public void handleOnResume() {
+        	JNIProxy.nativeOnResume();
+        }        
     }
 }

@@ -25,9 +25,9 @@ MODPLUG_SRC_PATH	:= $(LOCAL_PATH)/libmodplug-0.8.8.4/
 OGG_SRC_PATH		:= $(LOCAL_PATH)/libogg-1.3.0/
 VORBIS_SRC_PATH		:= $(LOCAL_PATH)/libvorbis-1.3.3/
 FREETYPE_SRC_PATH	:= $(LOCAL_PATH)/freetype-2.4.11/
-LOVE_SRC_PATH		:= ../../../love2d_android/
-ZIP_SRC_PATH 		:= ../../../love2d_android/libraries/Minizip/
-KAZMATH_SRC_PATH	:= ../../../love2d_android/libraries/kazmath/
+LOVE_SRC_PATH		:= ../../../love2d_android2/
+ZIP_SRC_PATH 		:= ../../../love2d_android2/libraries/Minizip/
+KAZMATH_SRC_PATH	:= ../../../love2d_android2/libraries/kazmath/
 
 # liblove
 include $(CLEAR_VARS)
@@ -44,10 +44,10 @@ LOCAL_C_INCLUDES := \
 	${FREETYPE_SRC_PATH}include \
 	${PNG_SRC_PATH} \
 	${BOX2D_SRC_PATH} \
-	$(LOCAL_PATH)/../../../love2d_android \
-	$(LOCAL_PATH)/../../../love2d_android/modules \
-	$(LOCAL_PATH)/../../../love2d_android/libraries \
-	$(LOCAL_PATH)/../../../love2d_android/libraries/kazmath/include \
+	$(LOCAL_PATH)/../../../love2d_android2 \
+	$(LOCAL_PATH)/../../../love2d_android2/modules \
+	$(LOCAL_PATH)/../../../love2d_android2/libraries \
+	$(LOCAL_PATH)/../../../love2d_android2/libraries/kazmath/include \
 	
 LOCAL_SRC_FILES := \
 	${ZIP_SRC_PATH}unzip.c \
@@ -92,8 +92,8 @@ LOCAL_CFLAGS    := -DRAPIDXML_NO_EXCEPTIONS
 LOCAL_C_INCLUDES := \
 	${LUA_SRC_PATH}src \
 	$(LOCAL_PATH)/../../.. \
-	$(LOCAL_PATH)/../../../love2d_android \
-	$(LOCAL_PATH)/../../../love2d_android/modules \
+	$(LOCAL_PATH)/../../../love2d_android2 \
+	$(LOCAL_PATH)/../../../love2d_android2/modules \
 	${LOVE_SRC_PATH}src/common/runtime.cpp \
 
 LOCAL_SRC_FILES	:= \
