@@ -20,6 +20,7 @@
 
 #include "SpriteBatch.h"
 #include "Shader.h"
+#include "PixelEffect.h"
 
 // STD
 #include <iostream>
@@ -221,27 +222,31 @@ namespace opengl
  		VertexBuffer::Bind array_bind(*array_buf);
  		VertexBuffer::Bind element_bind(*element_buf);
  
-		TextureShader* shader = ShaderCache::Instance()->getTexShader();
+		if (PixelEffect::current)
+		{
+			PixelEffect::current->setUniformMatrix();
+		}
+		else
+		{
+			Shader* shader = ShaderCache::Instance()->getTexShader();
 
-		shader->attach();
-		shader->setUniformMatrix();
+			shader->attach();
+			shader->setUniformMatrix();
+		}
 
 		// Load the vertex position
-		glVertexAttribPointer(shader->positionLoc, 2, GL_FLOAT, 
+		glVertexAttribPointer(e_VertexAttrib_Position, 2, GL_FLOAT, 
 			GL_FALSE, sizeof(vertex), array_buf->getPointer(vertex_offset));
 		// Load the texture coordinate
-		glVertexAttribPointer(shader->texCoordLoc, 2, GL_FLOAT,
+		glVertexAttribPointer(e_VertexAttrib_TexCoords, 2, GL_FLOAT,
 			GL_FALSE, sizeof(vertex), array_buf->getPointer(texel_offset));
 		// Load the color
-		glVertexAttribPointer(shader->colorLoc, 4, GL_UNSIGNED_BYTE,
+		glVertexAttribPointer(e_VertexAttrib_Color, 4, GL_UNSIGNED_BYTE,
 			GL_FALSE, sizeof(vertex), array_buf->getPointer(color_offset));
 
-		glEnableVertexAttribArray(shader->positionLoc);
-		glEnableVertexAttribArray(shader->texCoordLoc);
-		glEnableVertexAttribArray(shader->colorLoc);
-
-		// Set the sampler texture unit to 0
-		glUniform1i(shader->samplerLoc, 0);
+		glEnableVertexAttribArray(e_VertexAttrib_Position);
+		glEnableVertexAttribArray(e_VertexAttrib_TexCoords);
+		glEnableVertexAttribArray(e_VertexAttrib_Color);
 
  		glDrawElements(GL_TRIANGLES, next*6, GL_UNSIGNED_SHORT, element_buf->getPointer(0));
  

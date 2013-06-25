@@ -27,6 +27,8 @@
 #include "OpenGL.h"
 #include "Image.h"
 
+#include "Shader.h"
+
 namespace love
 {
 namespace graphics
@@ -56,10 +58,13 @@ namespace opengl
 		void sendImage(const std::string& name, const Image& image);
 //		void sendCanvas(const std::string& name, const Canvas& canvas);
 
+		void setUniformMatrix();
+
 	private:
 		GLint getUniformLocation(const std::string& name);
 		void checkSetUniformError();
 		GLuint _program;
+		GLint m_uniforms[e_Uniform_MAX];
 		std::string _code; // volatile and stuff
 
 		// uniform location buffer

@@ -145,7 +145,7 @@ extern "C" LOVE_EXPORT int luaopen_love(lua_State * L)
 extern "C" int luaopen_love_boot(lua_State *L)
 {
 #ifdef LOVE_WINDOWS
-	if (luaL_loadfile(L, "../../../src/love2d_android/scripts/boot.lua") == 0)
+	if (luaL_loadfile(L, "../../../src/love2d_android2/scripts/boot.lua") == 0)
 		lua_call(L, 0, 1);
 #elif defined LOVE_ANDROID_JNI
 	long unsigned int size;
@@ -231,7 +231,7 @@ void resize_common(int width, int height)
 
 	// Set up orthographic view (no depth)
 	kmMat4 orthoMatrix;
-	kmMat4OrthographicProjection(&orthoMatrix, 0, width, 0, height, -1.0, 1.0);
+	kmMat4OrthographicProjection(&orthoMatrix, 0, width, height, 0, -1.0, 1.0);
 	kmGLMultMatrix(&orthoMatrix);
 
 	kmGLScalef(g_scale, g_scale, 0.0f);

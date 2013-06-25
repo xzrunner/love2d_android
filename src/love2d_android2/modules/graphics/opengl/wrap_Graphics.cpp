@@ -1066,7 +1066,7 @@ namespace opengl
  		//	lua_call(L, 0, 0);
 
 #ifdef LOVE_WINDOWS
-		if (luaL_loadfile(L, "../../../src/love2d_android/scripts/graphics.lua") == 0)
+		if (luaL_loadfile(L, "../../../src/love2d_android2/scripts/graphics.lua") == 0)
 			lua_call(L, 0, 0);
 #elif defined LOVE_ANDROID_JNI
 		long unsigned int size;

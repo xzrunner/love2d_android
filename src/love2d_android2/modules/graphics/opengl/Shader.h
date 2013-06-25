@@ -11,6 +11,34 @@ namespace graphics
 {
 namespace opengl
 {
+	enum {
+		e_VertexAttrib_Position,
+		e_VertexAttrib_Color,
+		e_VertexAttrib_TexCoords,
+
+		e_VertexAttrib_MAX,
+	};
+
+	enum {
+		e_UniformPMatrix,
+		e_UniformMVMatrix,
+		e_UniformMVPMatrix,
+		e_UniformSampler,
+
+		e_Uniform_MAX,
+	};
+
+// uniform names
+#define UniformPMatrix			"PMatrix"
+#define UniformMVMatrix			"MVMatrix"
+#define UniformMVPMatrix		"MVPMatrix"
+#define UniformSampler			"s_texture"
+
+// Attribute names
+#define AttributeNameColor		"a_color"
+#define AttributeNamePosition	"a_position"
+#define AttributeNameTexCoord	"a_texCoord"
+
 	class Shader : public Object
 	{
 	public:
@@ -22,6 +50,9 @@ namespace opengl
 
 		void setUniformMatrix();
 
+		/** calls glUniform1i only if the values are different than the previous call for this same shader program. */
+		void setUniformLocationWith1i(GLint location, GLint i1);
+
 		/** calls glUniform1f only if the values are different than the previous call for this same shader program. */
 		void setUniformLocationWith1f(GLint location, GLfloat f1);
 
@@ -31,6 +62,9 @@ namespace opengl
 		/** calls glUniformMatrix4fv only if the values are different than the previous call for this same shader program. */
 		void setUniformLocationWithMatrix4fv(GLint location, GLfloat* matrixArray, unsigned int numberOfMatrices);
 
+	protected:
+		void addAttribute(const char* attributeName, GLuint index);
+
 	private:
 		GLuint createProgram(const char* pVertexSource, const char* pFragmentSource);
 
@@ -39,15 +73,6 @@ namespace opengl
 		void initUniforms();
 
 		bool updateUniformLocation(GLint location, GLvoid* data, unsigned int bytes);
-
-	protected:
-		enum {
-			e_UniformPMatrix,
-			e_UniformMVMatrix,
-			e_UniformMVPMatrix,
-
-			e_Uniform_MAX,
-		};
 
 	protected:
 		GLuint m_program;
@@ -67,8 +92,6 @@ namespace opengl
 		static const char gFragmentShader[];
 
 	public:
-		GLuint positionLoc;
-
 		GLuint colorLoc;
 		GLuint pointSizeLoc;
 
@@ -82,13 +105,6 @@ namespace opengl
 	private:
 		static const char gVertexShader[];
 		static const char gFragmentShader[];
-
-	public:
-		GLuint positionLoc;
-		GLuint texCoordLoc;
-		GLuint colorLoc;
-
-		GLuint samplerLoc;
 
 	}; // TextureShader
 

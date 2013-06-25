@@ -21,6 +21,7 @@
 #include "Font.h"
 #include "Quad.h"
 #include "Shader.h"
+#include "PixelEffect.h"
 
 #include <libraries/utf8/utf8.h>
 #include <libraries/kazmath/include/kazmath/GL/matrix.h>
@@ -51,19 +52,26 @@ namespace opengl
  
   		const vertex * verts = quad->getVertices();
   
-		TextureShader* shader = ShaderCache::Instance()->getTexShader();
+		if (PixelEffect::current)
+		{
+			PixelEffect::current->setUniformMatrix();
+		}
+		else
+		{
+			Shader* shader = ShaderCache::Instance()->getTexShader();
 
-		shader->attach();
-		shader->setUniformMatrix();
+			shader->attach();
+			shader->setUniformMatrix();
+		}
 
 		// Load the vertex position
-		glVertexAttribPointer(shader->positionLoc, 2, GL_FLOAT, 
+		glVertexAttribPointer(e_VertexAttrib_Position, 2, GL_FLOAT, 
 			GL_FALSE, sizeof(vertex), (GLvoid*)&verts[0].x);
 		// Load the texture coordinate
-		glVertexAttribPointer(shader->texCoordLoc, 2, GL_FLOAT,
+		glVertexAttribPointer(e_VertexAttrib_TexCoords, 2, GL_FLOAT,
 			GL_FALSE, sizeof(vertex), (GLvoid*)&verts[0].s);
 		// Load the color
-		glVertexAttribPointer(shader->colorLoc, 4, GL_UNSIGNED_BYTE,
+		glVertexAttribPointer(e_VertexAttrib_Color, 4, GL_UNSIGNED_BYTE,
 			GL_FALSE, sizeof(vertex), (GLvoid*)&verts[0].r);
   
   		kmGLPushMatrix();

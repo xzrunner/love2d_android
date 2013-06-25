@@ -78,6 +78,16 @@ namespace opengl
 		setUniformLocationWithMatrix4fv(m_uniforms[e_UniformMVPMatrix], matrixMVP.mat, 1);
 	}
 
+	void Shader::setUniformLocationWith1i(GLint location, GLint i1)
+	{
+		bool updated =  updateUniformLocation(location, &i1, sizeof(i1)*1);
+
+		if( updated )
+		{
+			glUniform1i( (GLint)location, i1);
+		}
+	}
+
 	void Shader::setUniformLocationWith1f(GLint location, GLfloat f1)
 	{
 		bool updated = updateUniformLocation(location, &f1, sizeof(f1)*1);
@@ -192,9 +202,13 @@ namespace opengl
 
 	void Shader::initUniforms()
 	{
-		m_uniforms[e_UniformPMatrix] = glGetUniformLocation(m_program, "PMatrix");
-		m_uniforms[e_UniformMVMatrix] = glGetUniformLocation(m_program, "MVMatrix");
-		m_uniforms[e_UniformMVPMatrix] = glGetUniformLocation(m_program, "MVPMatrix");
+		m_uniforms[e_UniformPMatrix] = glGetUniformLocation(m_program, UniformPMatrix);
+		m_uniforms[e_UniformMVMatrix] = glGetUniformLocation(m_program, UniformMVMatrix);
+		m_uniforms[e_UniformMVPMatrix] = glGetUniformLocation(m_program, UniformMVPMatrix);
+
+		m_uniforms[e_UniformSampler] = glGetUniformLocation(m_program, UniformSampler);
+		attach();
+		setUniformLocationWith1i(m_uniforms[e_UniformSampler], 0);
 	}
 
 	// Uniform cache
@@ -238,6 +252,14 @@ namespace opengl
 		return updated;
 	}
 
+	void Shader::addAttribute(const char* attributeName, GLuint index)
+	{
+		glBindAttribLocation(m_program, index, attributeName);
+
+		checkGlError("glBindAttribLocation");
+		log("glGetAttribLocation(\"%s\") = %d\n", attributeName, index);
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 	// class ShapeShader
 	//////////////////////////////////////////////////////////////////////////
@@ -265,15 +287,12 @@ namespace opengl
 
 	ShapeShader::ShapeShader()
 		: Shader(gVertexShader, gFragmentShader)
-		, positionLoc(0)
 		, colorLoc(0)
 		, pointSizeLoc(0)
 	{
 		if (m_program)
 		{
-			positionLoc = glGetAttribLocation(m_program, "a_position");
-			checkGlError("glGetAttribLocation");
-			log("glGetAttribLocation(\"a_position\") = %d\n", positionLoc);
+			addAttribute(AttributeNamePosition, e_VertexAttrib_Position);
 
 			colorLoc = glGetUniformLocation(m_program, "u_color");
 			checkGlError("glGetUniformLocation");
@@ -316,18 +335,14 @@ namespace opengl
 
 	TextureShader::TextureShader()
 		: Shader(gVertexShader, gFragmentShader)
-		, positionLoc(0)
-		, texCoordLoc(0)
-		, colorLoc(0)
-		, samplerLoc(0)
 	{
-		// Get the attribute locations
-		positionLoc = glGetAttribLocation(m_program, "a_position");
-		texCoordLoc = glGetAttribLocation(m_program, "a_texCoord");
-		colorLoc = glGetAttribLocation(m_program, "a_color");
-
-		// Get the sampler location
-		samplerLoc = glGetUniformLocation (m_program, "s_texture");
+		if (m_program)
+		{
+			// Get the attribute locations
+			addAttribute(AttributeNamePosition, e_VertexAttrib_Position);
+			addAttribute(AttributeNameTexCoord, e_VertexAttrib_TexCoords);
+			addAttribute(AttributeNameColor, e_VertexAttrib_Color);
+		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////

@@ -21,6 +21,7 @@
 #include "Image.h"
 #include "OpenGL.h"
 #include "Shader.h"
+#include "PixelEffect.h"
 
 #include <libraries/kazmath/include/kazmath/GL/matrix.h>
 
@@ -439,27 +440,31 @@ namespace opengl
 		memcpy(m.mat, t.getElements(), sizeof(float) * 16);
 		kmGLMultMatrix(&m);
 
-		TextureShader* shader = ShaderCache::Instance()->getTexShader();
+		if (PixelEffect::current)
+		{
+			PixelEffect::current->setUniformMatrix();
+		}
+		else
+		{
+			Shader* shader = ShaderCache::Instance()->getTexShader();
 
-		shader->attach();
-		shader->setUniformMatrix();
+			shader->attach();
+			shader->setUniformMatrix();
+		}
 
 		// Load the vertex position
-		glVertexAttribPointer(shader->positionLoc, 2, GL_FLOAT, 
+		glVertexAttribPointer(e_VertexAttrib_Position, 2, GL_FLOAT, 
 			GL_FALSE, sizeof(vertex), (GLvoid*)&v[0].x);
 		// Load the texture coordinate
-		glVertexAttribPointer(shader->texCoordLoc, 2, GL_FLOAT,
+		glVertexAttribPointer(e_VertexAttrib_TexCoords, 2, GL_FLOAT,
 			GL_FALSE, sizeof(vertex), (GLvoid*)&v[0].s);
 		// Load the color
-		glVertexAttribPointer(shader->colorLoc, 4, GL_UNSIGNED_BYTE,
+		glVertexAttribPointer(e_VertexAttrib_Color, 4, GL_UNSIGNED_BYTE,
 			GL_FALSE, sizeof(vertex), (GLvoid*)&v[0].r);
 
-		glEnableVertexAttribArray(shader->positionLoc);
-		glEnableVertexAttribArray(shader->texCoordLoc);
-		glEnableVertexAttribArray(shader->colorLoc);
-
-		// Set the sampler texture unit to 0
-		glUniform1i(shader->samplerLoc, 0);
+		glEnableVertexAttribArray(e_VertexAttrib_Position);
+		glEnableVertexAttribArray(e_VertexAttrib_TexCoords);
+		glEnableVertexAttribArray(e_VertexAttrib_Color);
 
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 

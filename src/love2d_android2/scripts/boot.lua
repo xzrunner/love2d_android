@@ -723,13 +723,13 @@ function love.errhand(msg)
 
 	error_printer(msg, 2)
 
-	if not love.graphics or not love.event or not love.graphics.isCreated() then
+	if not love.graphics or not love.event then
 		return
 	end
 
 	-- Load.
 	if love.audio then love.audio.stop() end
-	love.graphics.reset()
+--	love.graphics.reset()
 	love.graphics.setBackgroundColor(89, 157, 220)
 	local font = love.graphics.newFont(14)
 	love.graphics.setFont(font)

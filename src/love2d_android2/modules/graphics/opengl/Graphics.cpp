@@ -633,16 +633,23 @@ namespace opengl
  		vertex[0] = x;
  		vertex[1] = y;
 
-		ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
+		if (PixelEffect::current)
+		{
+			PixelEffect::current->setUniformMatrix();
+		}
+		else
+		{
+			ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
 
-		shader->attach();
-		shader->setUniformMatrix();
+			shader->attach();
+			shader->setUniformMatrix();
 
-		shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
-		shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+			shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
+			shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+		}
 
-		glVertexAttribPointer(shader->positionLoc, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)vertex);
-		glEnableVertexAttribArray(shader->positionLoc);
+		glVertexAttribPointer(e_VertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)vertex);
+		glEnableVertexAttribArray(e_VertexAttrib_Position);
 		glDrawArrays(GL_POINTS, 0, 1);
 	}
 
@@ -788,16 +795,23 @@ namespace opengl
 
 	void Graphics::polyline(const float* coords, size_t count)
 	{
-		ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
+		if (PixelEffect::current)
+		{
+			PixelEffect::current->setUniformMatrix();
+		}
+		else
+		{
+			ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
 
-		shader->attach();
-		shader->setUniformMatrix();
+			shader->attach();
+			shader->setUniformMatrix();
 
-		shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
-		shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+			shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
+			shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+		}
 
-		glVertexAttribPointer(shader->positionLoc, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)coords);
-		glEnableVertexAttribArray(shader->positionLoc);
+		glVertexAttribPointer(e_VertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)coords);
+		glEnableVertexAttribArray(e_VertexAttrib_Position);
 		glDrawArrays(GL_LINE_STRIP, 0, count >> 1);
 	}
 
@@ -818,16 +832,23 @@ namespace opengl
 			gTriangleVertices[4] = x3;
 			gTriangleVertices[5] = y3;
 
-			ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
+			if (PixelEffect::current)
+			{
+				PixelEffect::current->setUniformMatrix();
+			}
+			else
+			{
+				ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
 
-			shader->attach();
-			shader->setUniformMatrix();
+				shader->attach();
+				shader->setUniformMatrix();
 
-			shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
-			shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+				shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
+				shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+			}
 
-			glVertexAttribPointer(shader->positionLoc, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
-			glEnableVertexAttribArray(shader->positionLoc);
+			glVertexAttribPointer(e_VertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
+			glEnableVertexAttribArray(e_VertexAttrib_Position);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
   		}
 	}
@@ -848,16 +869,23 @@ namespace opengl
  		{
  			float coords[] = { x1,y1, x2,y2, x4,y4, x3,y3 };
 
-			ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
+			if (PixelEffect::current)
+			{
+				PixelEffect::current->setUniformMatrix();
+			}
+			else
+			{
+				ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
 
-			shader->attach();
-			shader->setUniformMatrix();
+				shader->attach();
+				shader->setUniformMatrix();
 
-			shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
-			shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+				shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
+				shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+			}
 
-			glVertexAttribPointer(shader->positionLoc, 2, GL_FLOAT, GL_FALSE, 0, coords);
-			glEnableVertexAttribArray(shader->positionLoc);
+			glVertexAttribPointer(e_VertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, coords);
+			glEnableVertexAttribArray(e_VertexAttrib_Position);
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
  		}
 	}
@@ -913,16 +941,23 @@ namespace opengl
  // 			coords[2*points + 2] = coords[3];
  
 
-			ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
+			if (PixelEffect::current)
+			{
+				PixelEffect::current->setUniformMatrix();
+			}
+			else
+			{
+				ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
 
-			shader->attach();
-			shader->setUniformMatrix();
+				shader->attach();
+				shader->setUniformMatrix();
 
-			shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
-			shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+				shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
+				shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+			}
 
-			glVertexAttribPointer(shader->positionLoc, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)coords);
-			glEnableVertexAttribArray(shader->positionLoc);
+			glVertexAttribPointer(e_VertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)coords);
+			glEnableVertexAttribArray(e_VertexAttrib_Position);
 			glDrawArrays(GL_TRIANGLE_FAN, 0, points + 1);
 
  			delete[] coords;
@@ -966,16 +1001,23 @@ namespace opengl
  		}
  		else
  		{
-			ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
+			if (PixelEffect::current)
+			{
+				PixelEffect::current->setUniformMatrix();
+			}
+			else
+			{
+				ShapeShader* shader = ShaderCache::Instance()->getShapeShader();
 
-			shader->attach();
-			shader->setUniformMatrix();
+				shader->attach();
+				shader->setUniformMatrix();
 
-			shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
-			shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+				shader->setUniformLocationWith4fv(shader->colorLoc, (GLfloat*)&color.r, 1);
+				shader->setUniformLocationWith1f(shader->pointSizeLoc, pointSize);
+			}
 
-			glVertexAttribPointer(shader->positionLoc, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)coords);
-			glEnableVertexAttribArray(shader->positionLoc);
+			glVertexAttribPointer(e_VertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)coords);
+			glEnableVertexAttribArray(e_VertexAttrib_Position);
 			glDrawArrays(GL_TRIANGLE_FAN, 0, points + 2);
 
 
@@ -1099,26 +1141,31 @@ namespace opengl
  
  		const vertex * vertices = image->getVertices();
  
-		TextureShader* shader = ShaderCache::Instance()->getTexShader();
+		if (PixelEffect::current)
+		{
+			PixelEffect::current->setUniformMatrix();
+		}
+		else
+		{
+			Shader* shader = ShaderCache::Instance()->getTexShader();
 
-		shader->attach();
-		shader->setUniformMatrix();
+			shader->attach();
+			shader->setUniformMatrix();
+		}
 
 		// Load the vertex position
-		glVertexAttribPointer(shader->positionLoc, 2, GL_FLOAT, 
+		glVertexAttribPointer(e_VertexAttrib_Position, 2, GL_FLOAT, 
 			GL_FALSE, sizeof(vertex), (GLvoid*)&buf[0].x);
 		// Load the texture coordinate
-		glVertexAttribPointer(shader->texCoordLoc, 2, GL_FLOAT,
+		glVertexAttribPointer(e_VertexAttrib_TexCoords, 2, GL_FLOAT,
 			GL_FALSE, sizeof(vertex), (GLvoid*)&vertices[0].s);
 		// Load the color
-		glVertexAttribPointer(shader->colorLoc, 4, GL_UNSIGNED_BYTE,
+		glVertexAttribPointer(e_VertexAttrib_Color, 4, GL_UNSIGNED_BYTE,
 			GL_FALSE, sizeof(vertex), (GLvoid*)&vertices[0].r);
 
-		glEnableVertexAttribArray(shader->positionLoc);
-		glEnableVertexAttribArray(shader->texCoordLoc);
-		glEnableVertexAttribArray(shader->colorLoc);
-
-		glUniform1i(shader->samplerLoc, 0);
+		glEnableVertexAttribArray(e_VertexAttrib_Position);
+		glEnableVertexAttribArray(e_VertexAttrib_TexCoords);
+		glEnableVertexAttribArray(e_VertexAttrib_Color);
 
  		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 	}

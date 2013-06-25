@@ -20,6 +20,8 @@
 
 #include "PixelEffect.h"
 
+#include "libraries/kazmath/include/kazmath/GL/matrix.h"
+
 namespace
 {
 	// temporarily attaches a shader program (for setting uniforms, etc)
@@ -108,13 +110,29 @@ namespace opengl
 
 		// compile vertices shader code
 		std::string vCode = "				\
-			attribute vec4 vPosition;		\
+			precision mediump float;		\
+			uniform mat4 PMatrix;			\
+			uniform mat4 MVMatrix;			\
+			uniform mat4 MVPMatrix;			\
+											\
+			attribute vec4 a_position;		\
+			attribute vec2 a_texCoord;		\
+			attribute vec4 a_color;			\
+											\
+			varying vec2 v_texCoord;		\
+			varying vec4 v_fragmentColor;	\
+											\
 			void main()						\
 			{								\
-				gl_FrontColor = gl_Color;   \
-				gl_Position = vPosition;	\
-			}								\
+				gl_Position = MVPMatrix * a_position;	\
+				v_fragmentColor = a_color / 255.0;		\
+				v_texCoord = a_texCoord;				\
+			}											\
 			";
+		
+		// v_fragmentColor = a_color / 255.0;	
+		// gl_FrontColor = gl_Color;
+
 		const char* vSrc = vCode.c_str();
 		GLint vStrlen = vCode.length();
 		glShaderSource(vShader, 1, (const GLchar**)&vSrc, &vStrlen);
@@ -178,6 +196,21 @@ namespace opengl
 
 		glDeleteShader(shader);
 		glDeleteShader(vShader);
+
+		//////////////////////////////////////////////////////////////////////////
+		glBindAttribLocation(_program, e_VertexAttrib_Position, AttributeNamePosition);
+ 		glBindAttribLocation(_program, e_VertexAttrib_TexCoords, AttributeNameTexCoord);
+ 		glBindAttribLocation(_program, e_VertexAttrib_Color, AttributeNameColor);
+
+		m_uniforms[e_UniformPMatrix] = glGetUniformLocation(_program, UniformPMatrix);
+		m_uniforms[e_UniformMVMatrix] = glGetUniformLocation(_program, UniformMVMatrix);
+		m_uniforms[e_UniformMVPMatrix] = glGetUniformLocation(_program, UniformMVPMatrix);
+
+		m_uniforms[e_UniformSampler] = glGetUniformLocation(_program, "_tex0_");
+		attach();
+		glUniform1i( (GLint)m_uniforms[e_UniformSampler], 0);
+		//////////////////////////////////////////////////////////////////////////		
+
 		return true;
 	}
 
@@ -232,6 +265,8 @@ namespace opengl
 	{
 		glUseProgram(_program);
 		current = this;
+
+		setUniformMatrix();
 	}
 
 	void PixelEffect::detach()
@@ -333,6 +368,22 @@ namespace opengl
 // 		// throw error if needed
 // 		checkSetUniformError();
 // 	}
+
+	void PixelEffect::setUniformMatrix()
+	{
+		kmMat4 matrixP;
+		kmMat4 matrixMV;
+		kmMat4 matrixMVP;
+
+		kmGLGetMatrix(KM_GL_PROJECTION, &matrixP);
+		kmGLGetMatrix(KM_GL_MODELVIEW, &matrixMV);
+
+		kmMat4Multiply(&matrixMVP, &matrixP, &matrixMV);
+
+		glUniformMatrix4fv((GLint)m_uniforms[e_UniformPMatrix], 1, GL_FALSE, matrixP.mat);
+		glUniformMatrix4fv((GLint)m_uniforms[e_UniformMVMatrix], 1, GL_FALSE, matrixMV.mat);
+		glUniformMatrix4fv((GLint)m_uniforms[e_UniformMVPMatrix], 1, GL_FALSE, matrixMVP.mat);
+	}
 
 	GLint PixelEffect::getUniformLocation(const std::string& name)
 	{
