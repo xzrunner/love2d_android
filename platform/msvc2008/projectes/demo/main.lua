@@ -1,130 +1,98 @@
-screen = {
-		w = love.graphics.getWidth(),
-		h = love.graphics.getHeight()
-	}
-	
---VERSION AND SUCH
-game_version = "0.2"
---love.graphics.setCaption("Nameless "..game_version)
-	
---DEBUG RELATED
-debug_enabled = true --debug mode enabled or not
-debug_lines = false
-debug_playermouse = false
+local balls = {
+	{400,300}, -- this one will be controlled by the mouse
 
-slow = false
+	{400,300}, -- these will
+	{400,300}, -- fly
+	{400,300}, -- around
 
-
+	-- the rest just sits there
+	{50,50}, {50,550}, {750,50}, {750,550}
+}
 
 function love.load()
-	font = {
-		small = love.graphics.newFont(14),
-		large = love.graphics.newFont(24)
-	}
-	
-love.graphics.setFont(font.small)
+--	assert(love.graphics.isSupported('pixeleffect'), 'Pixel effects are not supported on your hardware. Sorry about that.')
 
-	--REQUIRE
-	require "menu"
-	require "player"
-	require "world"
-	require "obj"
-	require "ent"
-	require "note"
-	require "shaders"
-	require "hud"
-	require "game"
-	--Game state
-	state = {
-			menu = "menu",
-			game = "game"
-		}
-	gamestate = state.game
-	
-	--Creating HUD
-	hud.newMeter("health", 12, screen.h - world.ground_h + 12, screen.w - 24, 10, player.health.m, {180, 0, 0}, 100)
-	hud.newMeter("time", 12, screen.h - world.ground_h + 3, screen.w - 24, 5, game_time.m, {255, 255, 255}, 100)
-	hud.newMeter("ammo", 12, screen.h - world.ground_h + 26, screen.w - 24, 5, player.ammo.m, {0, 180, 0}, 100)
-	hud.newMeter("focus", screen.w - 12 - (player.focus.m * 2), screen.h - world.ground_h + 38, player.focus.m * 2, 10, player.focus.m, {0, 200, 255}, 100)
-	
-	--Game start
-	game.reset()
-	love.timer.step()
-end
-
-function love.update(dt)
-	if slow then dt = dt / 4 end
-
-	if gamestate == state.game then
-		game.update(dt)
-	elseif gamestate == state.menu then
-		menu.update(dt)
+	-- yep, Lua can be used for meta-programming an effect :D
+	local loop_unroll = {}
+	for i = 1,#balls do
+		loop_unroll[i] = ("p += metaball(pc - balls[%d]);"):format(i-1)
 	end
+	local src = [[
+		extern vec2[%d] balls;
+		extern vec4 palette;
+
+		float metaball(vec2 x)
+		{
+			x /= 30.0;
+			return 1.0 / (dot(x, x) + .00001) * 3.0;
+			//return exp(-dot(x,x)/6000.0) * 3.0;
+		}
+
+		number _hue(number s, number t, number h)
+		{
+			h = mod(h, 1.);
+			number six_h = 6.0 * h;
+			if (six_h < 1.) return (t-s) * six_h + s;
+			if (six_h < 3.) return t;
+			if (six_h < 4.) return (t-s) * (4.-six_h) + s;
+			return s;
+		}
+
+		vec4 hsl_to_rgb(vec4 c)
+		{
+			if (c.y == 0)
+				return vec4(vec3(c.z), c.a);
+
+			number t = (c.z < .5) ? c.y*c.z + c.z : -c.y*c.z + (c.y+c.z);
+			number s = 2.0 * c.z - t;
+			#define Q 1.0/3.0
+			return vec4(_hue(s,t,c.x+Q), _hue(s,t,c.x), _hue(s,t,c.x-Q), c.w);
+		}
+
+		vec4 effect(vec4 color, Image tex, vec2 tc, vec2 pc)
+		{
+			float p = 0.0;
+			%s
+
+			color = .5 * (p + ceil(p*5.)/5.) * hsl_to_rgb(palette);
+			return color;
+		}
+	]]
+	src = src:format(#balls, table.concat(loop_unroll))
+	--print(src)
+
+	effect = love.graphics.newPixelEffect(src)
+	effect:send('balls', unpack(balls))
+	effect:send('palette', {0, 0, 0, 10})
 end
 
 function love.draw()
-	if gamestate == state.game then
-		game.draw()
-	elseif gamestate == state.menu then
-		menu.draw()
-	end
-	
-	if debug_enabled then
-		--love.graphics.setColor(255, 255, 255, 255)
-		--love.graphics.setFont(font.small)
-		--[[love.graphics.print("FPS: "..love.timer.getFPS().."\nGame State: "..gamestate.."\nPlayer Friction: "..player.friction.c.."\nAcc: "..player.acc.c.."\nPlayer xVel: "..math.floor(player.xVel).."\nPlayer yVel: "..math.floor(player.yVel)
-		.."\nPlayer airborne: "..tostring(player.air).."\nBullets: "..#bullets
-		.."\nAngle: "..getAngle(player.x + (player.w / 2), player.y + (player.h / 2), love.mouse.getX(), love.mouse.getY())
-		.."\nShaders Enabled: "..tostring(shaders_enabled), 12, 12)
-		--]]
-	end
-	
+	love.graphics.setPixelEffect(effect)
+	love.graphics.rectangle('fill', 0,0,love.graphics.getWidth(), love.graphics.getHeight())
 end
 
-function love.mousepressed(x, y, k)
-	if gamestate == state.game then
-		game.mousepressed(x, y, k)
-	elseif gamestate == state.menu then
-	
-	end
-end
+t = 0
+function love.update(dt)
+	t = t + dt
 
-function love.keypressed(key, unicode)
-	if gamestate == state.game then
-		game.keypressed(key)
-	elseif gamestate == state.menu then
-	
-	end
-	
-	--DEBUG
-	if key == "tab" then debug_enabled = not debug_enabled end --Debug Toggle
-	if debug_enabled then --Debug keypresses
-		if key == "escape" then
-			love.event.push("quit")
-		end
-		if key == "o" then
-			shaders_enabled = not shaders_enabled
-			note.new("shaders_enabled: "..tostring(shaders_enabled), color_white)
-		end
-		if key == "n" then
-			debug_playermouse = not debug_playermouse
-			note.new("player_mouse: "..tostring(debug_playermouse), color_white)
-		end
-	end
-end
+	balls[1] = {
+		love.mouse.getX(),
+		-- y coordinate is flipped in pixel effects
+		love.graphics.getHeight() - love.mouse.getY()
+	}
+	balls[2] = {
+		math.sin(2*t) * 120 + love.graphics.getWidth()/2,
+		math.cos(t)   * 120 + love.graphics.getHeight()/2
+	}
+	balls[3] = {
+		math.sin(t)   * 120 + love.graphics.getWidth()/2,
+		math.cos(2*t) * 120 + love.graphics.getHeight()/2
+	}
+	balls[4] = {
+		math.sin(t) * (110 + math.sin(.01*t) * 110)  + love.graphics.getWidth()/2,
+		math.cos(t) * (110 + math.sin(.01*t) * 110)  + love.graphics.getHeight()/2,
+	}
 
---MATH FUNCTIONS
-function getAngle(x1, y1, x2, y2) 
-	return math.deg(math.atan2(x2-x1, y2-y1))
-end
-
-function checkCollision(ax1,ay1,aw,ah, bx1,by1,bw,bh)
-	local ax2,ay2,bx2,by2 = ax1 + aw, ay1 + ah, bx1 + bw, by1 + bh
-	return ax1 < bx2 and ax2 > bx1 and ay1 < by2 and ay2 > by1
-end
-
-function getDistance(x1, y1, x2, y2)
-	local dx = x1-x2
-	local dy = y1-y2
-	return math.sqrt((dx * dx + dy * dy))
+	effect:send('balls', unpack(balls))
+	effect:send('palette', {t/10,.5 + .5*math.cos(t/5), .5, 10.0})
 end
