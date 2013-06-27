@@ -359,6 +359,13 @@ namespace opengl
 
 	ShaderCache::~ShaderCache()
 	{
+		clear();
+	}
+
+	void ShaderCache::clear()
+	{
+		delete m_shape, m_shape = NULL;
+		delete m_tex, m_tex = NULL;
 	}
 
 	ShapeShader* ShaderCache::getShapeShader()

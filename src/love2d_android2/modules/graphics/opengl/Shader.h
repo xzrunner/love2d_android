@@ -113,6 +113,8 @@ namespace opengl
 	public:
 		static ShaderCache* Instance();
 		
+		void clear();
+
 		ShapeShader* getShapeShader();
 		TextureShader* getTexShader();
 

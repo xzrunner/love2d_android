@@ -29,7 +29,6 @@
 #include <libraries/kazmath/include/kazmath/GL/matrix.h>
 // todo
 #include <modules/graphics/opengl/Shader.h>
-#include <modules/graphics/opengl/PixelEffect.h>
 
 #ifdef LOVE_WINDOWS
 #	include <esUtil.h>
@@ -457,6 +456,8 @@ extern "C" void init(int argc, char ** argv)
 	// Boot
 	luaopen_love_boot(L);
 	lua_call(L, 0, 1);
+
+	love::graphics::opengl::ShaderCache::Instance()->clear();
 }
 
 extern "C" void resize(int w, int h)
